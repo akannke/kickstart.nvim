@@ -389,6 +389,13 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = {
+          mappings = {
+            i = {
+              ['<C-[>'] = require('telescope.actions').close, -- Insert モードで Ctrl+[ を押したら閉じる
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
