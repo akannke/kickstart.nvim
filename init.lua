@@ -676,6 +676,29 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Install Sway LSP as a custom	server
+      local lspconfig = require 'lspconfig'
+      local configs = require 'lspconfig.configs'
+
+      -- Check if the config is already defined (useful when reloading this file)
+      if not configs.sway_lsp then
+        configs.sway_lsp = {
+          default_config = {
+            cmd = { 'forc-lsp' },
+            filetypes = { 'sway' },
+            on_attach = on_attach,
+            init_options = {
+              -- Any initialization options
+              logging = { level = 'trace' },
+            },
+            root_dir = lspconfig.util.root_pattern('Forc.toml', '.git'),
+            settings = {},
+          },
+        }
+      end
+
+      lspconfig.sway_lsp.setup {}
     end,
   },
 
@@ -914,12 +937,44 @@ require('lazy').setup({
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
+    config = function()
+      vim.opt.foldmethod = 'expr'
+      vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+      vim.opt.foldlevel = 99 -- デフォルトですべて展開
+      vim.opt.foldenable = true -- フォールドを有効化
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+  {
+    'nvim-treesitter/nvim-treesitter-context', -- このプラグインをインストール
+    dependencies = { 'nvim-treesitter/nvim-treesitter' }, -- Tree-sitter に依存
+    opts = {
+      enable = true, -- プラグインを有効化
+      max_lines = 5, -- 表示する最大行数（必要に応じて変更）
+      trim_scope = nil, -- スコープのトリミング方法
+      patterns = { -- ファイルタイプごとの設定（デフォルトで十分な場合は省略可）
+        lua = { 'table_constructor' },
+      },
+      zindex = 20, -- コンテキストの表示優先順位（他の UI 要素との重なりを制御）
+    },
+  },
+  {
+    'nvim-treesitter/playground', -- Playground 拡張機能
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        playground = {
+          enable = true, -- Playground を有効化
+          updatetime = 25, -- ツリー表示の更新間隔（ms）
+          persist_queries = false, -- クエリ履歴を保存しない
+        },
+      }
+    end,
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
@@ -972,26 +1027,3 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-
--- Install Sway LSP as a custom	server
-local lspconfig = require 'lspconfig'
-local configs = require 'lspconfig.configs'
-
--- Check if the config is already defined (useful when reloading this file)
-if not configs.sway_lsp then
-  configs.sway_lsp = {
-    default_config = {
-      cmd = { 'forc-lsp' },
-      filetypes = { 'sway' },
-      on_attach = on_attach,
-      init_options = {
-        -- Any initialization options
-        logging = { level = 'trace' },
-      },
-      root_dir = lspconfig.util.root_pattern('Forc.toml', '.git'),
-      settings = {},
-    },
-  }
-end
-
-lspconfig.sway_lsp.setup {}
