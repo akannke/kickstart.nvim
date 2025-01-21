@@ -972,3 +972,26 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Install Sway LSP as a custom	server
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+
+-- Check if the config is already defined (useful when reloading this file)
+if not configs.sway_lsp then
+  configs.sway_lsp = {
+    default_config = {
+      cmd = { 'forc-lsp' },
+      filetypes = { 'sway' },
+      on_attach = on_attach,
+      init_options = {
+        -- Any initialization options
+        logging = { level = 'trace' },
+      },
+      root_dir = lspconfig.util.root_pattern('Forc.toml', '.git'),
+      settings = {},
+    },
+  }
+end
+
+lspconfig.sway_lsp.setup {}
