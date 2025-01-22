@@ -992,6 +992,13 @@ require('lazy').setup({
       local diff = require 'mini.diff'
       diff.setup { source = diff.gen_source.save() }
 
+      require('mini.files').setup {
+        mappings = {
+          close = '<ESC>', -- `<ESC>` キーで終了
+        },
+      }
+      vim.keymap.set('n', '<leader>e', MiniFiles.open, { desc = 'Open Mini Files Explorer' })
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
