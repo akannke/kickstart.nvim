@@ -195,6 +195,10 @@ vim.keymap.set('t', '<M-l>', [[<C-\><C-n><C-w>l]], { desc = 'Move focus to the r
 vim.keymap.set('t', '<M-j>', [[<C-\><C-n><C-w>j]], { desc = 'Move focus to the lower window' })
 vim.keymap.set('t', '<M-k>', [[<C-\><C-n><C-w>k]], { desc = 'Move focus to the upper window' })
 
+-- インサートモードで Emacs 風のキーバインドを設定
+vim.keymap.set('i', '<C-h>', '<C-w>', { noremap = true, desc = 'Backspace (delete previous character)' }) -- バックスペース (削除)
+vim.keymap.set('i', '<C-d>', '<Del>', { noremap = true, desc = 'Delete forward (like Del key)' }) -- 右の文字を削除
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
