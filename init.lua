@@ -196,7 +196,7 @@ vim.keymap.set('t', '<M-j>', [[<C-\><C-n><C-w>j]], { desc = 'Move focus to the l
 vim.keymap.set('t', '<M-k>', [[<C-\><C-n><C-w>k]], { desc = 'Move focus to the upper window' })
 
 -- インサートモードで Emacs 風のキーバインドを設定
-vim.keymap.set('i', '<C-h>', '<C-w>', { noremap = true, desc = 'Backspace (delete previous character)' }) -- バックスペース (削除)
+vim.keymap.set('i', '<C-h>', '<BS>', { noremap = true, desc = 'Backspace (delete previous character)' }) -- バックスペース (削除)
 vim.keymap.set('i', '<C-d>', '<Del>', { noremap = true, desc = 'Delete forward (like Del key)' }) -- 右の文字を削除
 
 -- [[ Basic Autocommands ]]
@@ -919,12 +919,12 @@ require('lazy').setup({
           --
           -- <c-l> will move you to the right of each of the expansion locations.
           -- <c-h> is similar, except moving you backwards.
-          ['<C-l>'] = cmp.mapping(function()
+          ['<C-j>'] = cmp.mapping(function()
             if luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
             end
           end, { 'i', 's' }),
-          ['<C-h>'] = cmp.mapping(function()
+          ['<C-k>'] = cmp.mapping(function()
             if luasnip.locally_jumpable(-1) then
               luasnip.jump(-1)
             end
