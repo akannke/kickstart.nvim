@@ -164,7 +164,8 @@ vim.opt.scrolloff = 10
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float, { desc = 'Show diagnostic [F]loat' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -393,12 +394,13 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
+        { '<leader>l', group = '[L]SP' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>d', group = '[D]iagnostics', mode = { 'n' } },
       },
     },
   },
@@ -616,7 +618,7 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>ld', require('telescope.builtin').lsp_document_symbols, '[D]ocument Symbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -1078,6 +1080,30 @@ require('lazy').setup({
     opts = {
       open_mapping = [[<C-t>]],
     },
+  },
+  {
+    'akinsho/bufferline.nvim',
+    version = '*', -- 安定版を取得
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('bufferline').setup {
+        options = {
+          mode = 'buffers', -- バッファをタブとして表示
+          diagnostics = 'nvim_lsp',
+          offsets = { -- 例：nvim-tree と共存させる
+            { filetype = 'NvimTree', text = '📁 File Explorer', separator = true },
+          },
+          separator_style = 'slant', -- / slant | padded_slant | thin ... 好みで
+        },
+      }
+      -- キーマップ例：タブ移動をカジュアルに
+      vim.keymap.set('n', ')', '<cmd>BufferLineCycleNext<CR>', { desc = '次のバッファ' })
+      vim.keymap.set('n', '(', '<cmd>BufferLineCyclePrev<CR>', { desc = '前のバッファ' })
+      vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = '[B]uffer [D]elete' })
+      -- ターミナルモード用：バッファ循環
+      vim.keymap.set('t', ')', [[<C-\><C-N><Cmd>BufferLineCycleNext<CR>]])
+      vim.keymap.set('t', '(', [[<C-\><C-N><Cmd>BufferLineCyclePrev<CR>]])
+    end,
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
